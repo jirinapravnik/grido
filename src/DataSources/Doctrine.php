@@ -48,6 +48,8 @@ class Doctrine extends \Nette\Object implements IDataSource
 
     /** @var bool fetch join collection in Doctrine Paginator */
     protected $fetchJoinCollection = TRUE;
+	
+	protected $totalCount;
 
     /** @var array */
     protected $rand;
@@ -90,6 +92,11 @@ class Doctrine extends \Nette\Object implements IDataSource
         return $this;
     }
 
+	public function setTotalCount($totalCount){
+		$this->totalCount = $totalCount;
+		return $this;
+	}
+	
     /**
      * @return \Doctrine\ORM\Query
      */
@@ -184,10 +191,14 @@ class Doctrine extends \Nette\Object implements IDataSource
      */
     public function getCount()
     {
+		if($this->totalCount !== NULL){
+			return $this->totalCount;
+		} else {		
         $paginator = new Paginator($this->getQuery(), $this->fetchJoinCollection);
         $paginator->setUseOutputWalkers($this->useOutputWalkers);
 
         return $paginator->count();
+    }
     }
 
     /**
